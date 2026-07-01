@@ -30,8 +30,7 @@ public class AuthController {
 	    }
 
 	    @PostMapping("/login")
-	    public ResponseEntity<LoginResponse> login(
-	            @RequestBody LoginRequest request) {
+	    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
 	        return ResponseEntity.ok(authService.login(request));
 	    }
 
@@ -41,15 +40,13 @@ public class AuthController {
 	    }
 
 	    @PutMapping("/change-password")
-	    public ResponseEntity<String> changePassword(
-	            @RequestParam String password) {
+	    public ResponseEntity<String> changePassword(@RequestParam String password) {
 	        authService.changePassword(password);
 	        return ResponseEntity.ok("Password updated");
 	    }
 
 	    @GetMapping("/validate")
-	    public ResponseEntity<Boolean> validate(
-	            @RequestParam String token) {
+	    public ResponseEntity<Boolean> validate(@RequestParam String token) {
 	        return ResponseEntity.ok(authService.validateToken(token));
 	    }
 }

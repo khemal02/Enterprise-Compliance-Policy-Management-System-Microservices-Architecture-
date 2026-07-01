@@ -2,7 +2,6 @@ package com.example.ecpms.employee.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +20,12 @@ import com.example.ecpms.employee.service.EmployeeService;
 public class EmployeeController {
 
 
-    @Autowired
-    private EmployeeService service;
+	private final EmployeeService service;
 
+	public EmployeeController(EmployeeService service) {
+	    this.service = service;
+	}
+	
     @PostMapping
     public ResponseEntity<EmployeeResponse> create(@RequestBody CreateEmployeeRequest request) {
         return ResponseEntity.ok(service.createEmployee(request));

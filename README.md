@@ -36,7 +36,7 @@ DevOps & Tools:Git, Postman, Swagger
 
 🚀 Getting Started
   Prerequisites
-    .Java 17+
+    .Java 21+
     .MySQL
     .Maven
   Run Steps

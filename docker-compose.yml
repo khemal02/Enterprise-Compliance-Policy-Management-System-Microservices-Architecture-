@@ -1,7 +1,10 @@
+version: "3.8"
+
 services:
+
   mysql:
     image: mysql:8.0
-    container_name: ecpms-mysql
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: Killam@123
       MYSQL_DATABASE: auth_db
@@ -9,177 +12,118 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-      
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -pKillam@123 --silent"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
 
   eureka:
-    build:
-      context: ./eureka
-      dockerfile: Dockerfile
-    container_name: ecpms-eureka
+    build: ./eureka
+    container_name: eureka
     ports:
       - "8761:8761"
-    environment:
-      EUREKA_INSTANCE_HOSTNAME: eureka
-      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
-      EUREKA_CLIENT_FETCH_REGISTRY: "false"
 
   auth-service:
-    build:
-      context: ./auth
-      dockerfile: Dockerfile
+    build: ./auth
+    container_name: auth-service
     ports:
       - "8081:8081"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/auth_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   employee-service:
-    build:
-      context: ./employee
-      dockerfile: Dockerfile
+    build: ./employee
+    container_name: employee-service
     ports:
       - "8085:8085"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8085
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employee_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   compliance-service:
-    build:
-      context: ./compliance
-      dockerfile: Dockerfile
+    build: ./compliance
+    container_name: compliance-service
     ports:
       - "8084:8084"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8084
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/compliance_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   policy-service:
-    build:
-      context: ./policy
-      dockerfile: Dockerfile
+    build: ./policy
+    container_name: policy-service
     ports:
       - "8086:8086"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8086
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/policy_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   approval-service:
-    build:
-      context: ./approval
-      dockerfile: Dockerfile
+    build: ./approval
+    container_name: approval-service
     ports:
       - "8083:8083"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8083
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/approval_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   audit-service:
-    build:
-      context: ./audit
-      dockerfile: Dockerfile
+    build: ./audit
+    container_name: audit-service
     ports:
       - "8082:8082"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8082
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/audit_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   notification-service:
-    build:
-      context: ./notification
-      dockerfile: Dockerfile
+    build: ./notification
+    container_name: notification-service
     ports:
       - "8087:8087"
     depends_on:
-      mysql:
-        condition: service_healthy
-      eureka:
-        condition: service_started
+      - mysql
+      - eureka
     environment:
-      SERVER_PORT: 8087
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/notification_db
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Killam@123
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
 
   gateway:
-    build:
-      context: ./gateway
-      dockerfile: Dockerfile
+    build: ./gateway
+    container_name: gateway
     ports:
       - "8088:8080"
     depends_on:
-      eureka:
-        condition: service_started
-      auth-service:
-        condition: service_started
-      employee-service:
-        condition: service_started
-      compliance-service:
-        condition: service_started
-      policy-service:
-        condition: service_started
-      approval-service:
-        condition: service_started
-      audit-service:
-        condition: service_started
-      notification-service:
-        condition: service_started
-    environment:
-      SERVER_PORT: 8080
-      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka:8761/eureka
+      - eureka
+      - auth-service
+      - employee-service
+      - compliance-service
+      - policy-service
+      - approval-service
+      - audit-service
+      - notification-service
 
 volumes:
   mysql-data:

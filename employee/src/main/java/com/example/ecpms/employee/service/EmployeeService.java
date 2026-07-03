@@ -11,9 +11,13 @@ public interface EmployeeService {
 	EmployeeResponse createEmployee(CreateEmployeeRequest request);
 
 	EmployeeResponse getEmployee(Long id);
+	
+	List<EmployeeResponse> getAllEmployees(); 
 
 	List<EmployeeResponse> getEmployeesByManager(Long managerId);
 
 	void deleteEmployee(Long id);
+
+
 
 }

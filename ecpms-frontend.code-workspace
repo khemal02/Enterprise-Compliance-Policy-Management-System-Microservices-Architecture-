@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../ecpms-frontend"
+		},
+		{
+			"path": "../ecmps-django"
+		}
+	],
+	"settings": {}
+}

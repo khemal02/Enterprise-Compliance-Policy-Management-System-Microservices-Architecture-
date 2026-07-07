@@ -25,6 +25,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 	    @Autowired
 	    private UserRepository userRepository;
+	    
+	    @Override
+	    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+	        String path = request.getServletPath();
+
+	        return path.equals("/auth/login")
+	                || path.equals("/auth/register");
+	    }
+
 
 	    @Override
 	    protected void doFilterInternal(HttpServletRequest request,
@@ -38,9 +48,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	        String username = null;
 
 	        // Extract token
-	        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-	            token = authHeader.substring(7);
-	            username = jwtUtil.extractUsername(token);
+	        try {
+
+	            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+	                token = authHeader.substring(7);
+	                username = jwtUtil.extractUsername(token);
+	            }
+
+	        } catch (Exception e) {
+	            filterChain.doFilter(request, response);
+	            return;
 	        }
 
 	        // Validate and set authentication

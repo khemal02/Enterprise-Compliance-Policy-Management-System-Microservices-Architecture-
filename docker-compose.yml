@@ -39,6 +39,7 @@ services:
   employee-service:
     build: ./employee
     container_name: employee-service
+    restart: unless-stopped
     ports:
       - "8085:8085"
     depends_on:

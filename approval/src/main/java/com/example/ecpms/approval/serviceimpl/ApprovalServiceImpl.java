@@ -17,6 +17,8 @@ import com.example.ecpms.approval.model.Approval;
 import com.example.ecpms.approval.repository.ApprovalRepository;
 import com.example.ecpms.approval.service.ApprovalService;
 
+import lombok.AllArgsConstructor;
+
 @Service
 public class ApprovalServiceImpl implements ApprovalService{
 

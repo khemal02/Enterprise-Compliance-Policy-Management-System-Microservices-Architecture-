@@ -13,10 +13,16 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pKillam@123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   eureka:
     build: ./eureka
     container_name: eureka
+    restart: unless-stopped
     ports:
       - "8761:8761"
     environment:
@@ -25,6 +31,7 @@ services:
   auth-service:
     build: ./auth
     container_name: auth-service
+    restart: unless-stopped
     ports:
       - "8081:8081"
     depends_on:
@@ -68,6 +75,7 @@ services:
   policy-service:
     build: ./policy
     container_name: policy-service
+    restart: unless-stopped
     ports:
       - "8086:8086"
     depends_on:
@@ -82,6 +90,7 @@ services:
   approval-service:
     build: ./approval
     container_name: approval-service
+    restart: unless-stopped
     ports:
       - "8083:8083"
     depends_on:
@@ -96,6 +105,7 @@ services:
   audit-service:
     build: ./audit
     container_name: audit-service
+    restart: unless-stopped
     ports:
       - "8082:8082"
     depends_on:
@@ -110,6 +120,7 @@ services:
   notification-service:
     build: ./notification
     container_name: notification-service
+    restart: unless-stopped
     ports:
       - "8087:8087"
     depends_on:
@@ -124,6 +135,7 @@ services:
   gateway:
     build: ./gateway
     container_name: gateway
+    restart: unless-stopped
     ports:
       - "8088:8088"
     depends_on:

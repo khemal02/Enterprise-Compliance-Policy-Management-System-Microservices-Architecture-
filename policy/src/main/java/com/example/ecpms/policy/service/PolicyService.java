@@ -9,12 +9,16 @@ public interface PolicyService {
 
 	    PolicyResponse createPolicy(PolicyRequest request);
 
-	    PolicyResponse getPolicyById(Long id);
-
 	    Page<PolicyResponse> getAllPolicies(int page, int size);
-
+	    
+	    PolicyResponse getPolicyById(Long id);
+	    
+	    PolicyResponse updatePolicy(Long id, PolicyRequest request);
+	    
 	    PolicyResponse activatePolicy(Long id);
 
 	    void deletePolicy(Long id);
+
+		
 
 }

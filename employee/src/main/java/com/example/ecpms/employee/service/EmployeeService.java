@@ -9,8 +9,10 @@ public interface EmployeeService {
 
 	
 	EmployeeResponse createEmployee(CreateEmployeeRequest request);
+	
+	EmployeeResponse updateEmployee(Long id,CreateEmployeeRequest request);
 
-	EmployeeResponse getEmployee(Long id);
+    EmployeeResponse getEmployee(Long id);
 	
 	List<EmployeeResponse> getAllEmployees(); 
 
@@ -18,6 +20,7 @@ public interface EmployeeService {
 
 	void deleteEmployee(Long id);
 
-
+	
+	
 
 }

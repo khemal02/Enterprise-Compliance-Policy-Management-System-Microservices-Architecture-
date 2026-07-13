@@ -57,6 +57,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 	                emp.getManagerId()
 	        );
 	    }
+	    
+	    @Override
+	    public EmployeeResponse updateEmployee(Long id,
+	                                           CreateEmployeeRequest request) {
+
+	        Employee emp = repository.findById(id)
+	                .orElseThrow(() ->
+	                        new RuntimeException("Employee not found"));
+
+	        emp.setEmployeeCode(request.getEmployeeCode());
+	        emp.setName(request.getName());
+	        emp.setEmail(request.getEmail());
+	        emp.setDepartment(request.getDepartment());
+	        emp.setManagerId(request.getManagerId());
+
+	        repository.save(emp);
+
+	        return new EmployeeResponse(
+
+	                emp.getId(),
+	                emp.getEmployeeCode(),
+	                emp.getName(),
+	                emp.getEmail(),
+	                emp.getDepartment(),
+	                emp.getManagerId()
+
+	        );
+
+	    }
 
 	    @Override
 	    public EmployeeResponse getEmployee(Long id) {

@@ -75,6 +75,37 @@ public class PolicyServiceImpl implements PolicyService {
 	        return policyRepository.findAll(pageable)
 	                .map(this::mapToResponse);
 	    }
+	    
+	    @Override
+	    public PolicyResponse updatePolicy(Long id, PolicyRequest request) {
+
+	        Policy policy = policyRepository.findById(id)
+	                .orElseThrow(() -> new RuntimeException("Policy not found with id: " + id));
+
+	        policy.setPolicyName(request.getPolicyName());
+	        policy.setDescription(request.getDescription());
+	        policy.setEffectiveDate(request.getEffectiveDate());
+	        policy.setExpiryDate(request.getExpiryDate());
+	        policy.setUpdatedAt(LocalDateTime.now());
+
+	        Policy updated = policyRepository.save(policy);
+
+	        // Audit Log
+	        try {
+	            auditClient.log(
+	                    com.example.ecpms.policy.dto.AuditRequest.builder()
+	                            .action("UPDATE_POLICY")
+	                            .performedBy("ADMIN")
+	                            .serviceName("policy-service")
+	                            .details("Policy updated with code: " + updated.getPolicyCode())
+	                            .build()
+	            );
+	        } catch (Exception e) {
+	            System.out.println("Audit failed: " + e.getMessage());
+	        }
+
+	        return mapToResponse(updated);
+	    }
 
 	    @Override
 	    public PolicyResponse activatePolicy(Long id) {
@@ -131,7 +162,7 @@ public class PolicyServiceImpl implements PolicyService {
 	                            .action("DELETE_POLICY")
 	                            .performedBy("ADMIN")
 	                            .serviceName("policy-service")
-	                            .details("Policy deleted with id: " + id)
+	                            .details("Policy deleted with code: " + policy.getPolicyCode())
 	                            .build()
 	            );
 	        } catch (Exception e) {

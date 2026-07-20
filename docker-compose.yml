@@ -61,6 +61,7 @@ services:
   compliance-service:
     build: ./compliance
     container_name: compliance-service
+    restart: unless-stopped
     ports:
       - "8084:8084"
     depends_on:

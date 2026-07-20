@@ -21,42 +21,42 @@ import com.example.ecpms.employee.service.EmployeeService;
 public class EmployeeController {
 
 
-	private final EmployeeService service;
+	private final EmployeeService employeeService;
 
-	public EmployeeController(EmployeeService service) {
-	    this.service = service;
+	public EmployeeController(EmployeeService employeeService) {
+	    this.employeeService = employeeService;
 	}
 	
     @PostMapping
     public ResponseEntity<EmployeeResponse> create(@RequestBody CreateEmployeeRequest request) {
-        return ResponseEntity.ok(service.createEmployee(request));
+        return ResponseEntity.ok(employeeService.createEmployee(request));
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<EmployeeResponse> update(@PathVariable Long id,@RequestBody CreateEmployeeRequest request) {
 
-        return ResponseEntity.ok(service.updateEmployee(id, request));
+        return ResponseEntity.ok(employeeService.updateEmployee(id, request));
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeResponse> get(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getEmployee(id));
+        return ResponseEntity.ok(employeeService.getEmployee(id));
     }
     
     @GetMapping
     public ResponseEntity<List<EmployeeResponse>> getAllEmployees() {
-        return ResponseEntity.ok(service.getAllEmployees());
+        return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
     @GetMapping("/manager/{managerId}")
     public ResponseEntity<List<EmployeeResponse>> getByManager(@PathVariable Long managerId) {
-        return ResponseEntity.ok(service.getEmployeesByManager(managerId));
+        return ResponseEntity.ok(employeeService.getEmployeesByManager(managerId));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        service.deleteEmployee(id);
+    	employeeService.deleteEmployee(id);
         return ResponseEntity.ok("Deleted successfully");
     }
 }

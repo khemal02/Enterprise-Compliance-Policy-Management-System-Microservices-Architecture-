@@ -151,5 +151,15 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
 
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+
 volumes:
   mysql-data:

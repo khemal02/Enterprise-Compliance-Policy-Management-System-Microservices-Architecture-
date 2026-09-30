@@ -1,7 +1,7 @@
 # 🚀 Enterprise Compliance & Policy Management System (ECPMS)
 
 ## 📌 Overview
-A microservices-based backend built with **Spring Boot** and **Spring Cloud** that helps an organization manage its policies,
+A full-stack, microservices-based application — **React** frontend with a **Spring Boot / Spring Cloud** backend — that helps an organization manage its policies,
 track employee compliance against those policies, and run an approval workflow — with audit logging and notifications
 for every decision.
 
@@ -13,7 +13,7 @@ for every decision.
 - Each service is independently deployable and containerized with Docker
 
 ```
-Client ──► API Gateway (8088) ──► Eureka (8761) lookup
+React UI (3000) ──► API Gateway (8088) ──► Eureka (8761) lookup
                 │
                 ├──► Auth Service
                 ├──► Employee Service
@@ -25,11 +25,39 @@ Client ──► API Gateway (8088) ──► Eureka (8761) lookup
 ```
 
 ## ⚙️ Tech Stack
+- **Frontend:** React 19, Material UI, React Router, Axios, React Toastify
 - **Backend:** Java 21, Spring Boot 3.2, Spring Cloud (Gateway, Eureka, OpenFeign)
 - **Security:** Spring Security, JWT (jjwt), BCrypt password hashing, Role-Based Access Control
 - **Database:** MySQL 8, Spring Data JPA (Hibernate)
 - **API Docs:** Springdoc OpenAPI / Swagger UI
-- **DevOps & Tools:** Docker, Docker Compose, Maven, Git, Postman
+- **DevOps & Tools:** Docker, Docker Compose, Nginx, Maven, Git, Postman
+
+## 📁 Project Structure
+```
+employee-compliance-system/
+├── frontend/        # React app (Material UI)
+├── gateway/         # Spring Cloud Gateway
+├── eureka/          # Eureka service registry
+├── auth/            # Auth service
+├── employee/        # Employee service
+├── policy/          # Policy service
+├── compliance/      # Compliance service
+├── approval/        # Approval service
+├── audit/           # Audit service
+├── notification/    # Notification service
+├── mysql-init/      # Creates one database per service
+└── docker-compose.yml
+```
+
+## 🖥️ Frontend
+A React single-page app that talks **only to the API Gateway** (never to services directly).
+
+- **Pages:** Login, Register, Dashboard, Employees, Policies, Compliance, Approvals, Audit, Notifications
+- **Auth:** JWT stored after login; an Axios interceptor attaches `Authorization: Bearer <token>` to every request
+  and redirects to login on `401` / `403`
+- **Protected routes:** unauthenticated users are redirected to the login page
+- **Config:** API base URL set via `REACT_APP_API_BASE_URL` (defaults to `http://localhost:8088`)
+- **Docker:** multi-stage build (Node → Nginx), served on port `3000`
 
 ## 🔧 Microservices
 
@@ -77,7 +105,7 @@ Client ──► API Gateway (8088) ──► Eureka (8761) lookup
 # build the jars
 cd <service> && ./mvnw clean package -DskipTests   # repeat for each service
 
-# start everything (MySQL, Eureka, all services, Gateway)
+# start everything (MySQL, Eureka, all services, Gateway, Frontend)
 docker-compose up --build
 ```
 MySQL is exposed on host port `3307`; the databases are created automatically by `mysql-init/init.sql`.
@@ -90,8 +118,16 @@ MySQL is exposed on host port `3307`; the databases are created automatically by
 3. Start the microservices with the `dev` profile (`SPRING_PROFILES_ACTIVE=dev`):
    Auth, Employee, Policy, Compliance, Approval, Audit, Notification
 4. Start the **API Gateway**
+5. Start the **frontend**:
+   ```bash
+   cd frontend
+   cp .env.example .env
+   npm install
+   npm start
+   ```
 
 ### Access
+- Frontend: **http://localhost:3000**
 - API Gateway: **http://localhost:8088**
 - Eureka Dashboard: http://localhost:8761
 - Swagger UI (aggregated): http://localhost:8088/swagger-ui.html
